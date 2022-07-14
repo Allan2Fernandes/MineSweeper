@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Minesweeper"
         mc:Ignorable="d"
-        Title="Minesweeper" Height="1000" Width="1000">
-    <Grid>
+        Title="Minesweeper" Height="1000" Width="1000" KeyUp="windowResetEventHandler">
+    <Grid x:Name="grid">
         <Canvas x:Name="canvas" Width="900" Height="900" Margin="50,42,50,42" Background="Transparent" MouseLeftButtonUp="leftMouseUpEventHandler" MouseRightButtonUp="rightMouseUpEventHandler">
             <Border BorderBrush="Black" BorderThickness="1" Height="900" Width="900" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="0"/>
         </Canvas>
+        <Label x:Name="scoreLabel" Content="Score:" HorizontalAlignment="Left" Margin="86,10,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="totalMinesLabel" Content="Total Mines:" HorizontalAlignment="Left" Margin="245,10,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="flaggedMinesLabel" Content="Flagged Mines:" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

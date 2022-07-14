@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace Minesweeper
@@ -13,7 +15,7 @@ namespace Minesweeper
     internal class Cell
     {
         Coordinate coordinate;
-        Boolean isFlagged; //If flagged, it doesn't let you trigger the mine
+        public Boolean isFlagged; //If flagged, it doesn't let you trigger the mine
         Boolean isATrap;
         Boolean isVisited;
         Boolean mineIsTriggered;
@@ -26,12 +28,14 @@ namespace Minesweeper
         int numOfNeighbourMines = 0;
         TextBlock numOfMinesTextBlock;
         public Boolean isDFSVisited;
+        
 
         public Cell(Coordinate coordinate, Canvas canvas)
         {
             this.coordinate = coordinate;
             this.canvas = canvas;
-
+            
+            
             isFlagged = false;
             isATrap = false;
             isVisited = false;
@@ -100,6 +104,7 @@ namespace Minesweeper
             if (isFlagged)
             {
                 isFlagged = false;
+                isDFSVisited = false;
             }
             else
             {
@@ -125,6 +130,7 @@ namespace Minesweeper
 
         public void drawTheCell(Boolean revealNeighbourNumber)
         {
+            
             canvas.Children.Remove(rectangleFill);
             canvas.Children.Remove(rectangleStroke);
             canvas.Children.Remove(numOfMinesTextBlock);
@@ -142,6 +148,7 @@ namespace Minesweeper
             if (isFlagged)
             {
                 rectangleFill.Fill = new SolidColorBrush(Colors.Red);
+                
             }else if (mineIsTriggered)
             {
                 rectangleFill.Fill = new SolidColorBrush(Colors.Black);
@@ -154,6 +161,8 @@ namespace Minesweeper
             canvas.Children.Add(rectangleStroke);
             Canvas.SetLeft(rectangleStroke, xPixelPosition);
             Canvas.SetTop(rectangleStroke, yPixelPosition);
+
+            
 
 
             if (revealNeighbourNumber)
@@ -188,6 +197,8 @@ namespace Minesweeper
         {
             Debug.WriteLine("xCoord is " + coordinate.getXCoordinate() + ", yCoord is " + coordinate.getYCoordinate());
         }
+
+        
        
     }
 }

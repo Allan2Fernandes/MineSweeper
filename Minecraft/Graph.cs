@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -19,8 +20,9 @@ namespace Minesweeper
         Cell[] cellList; //the index in the cellList corresponds to their indices in the adjMatrix
         Stack<Cell> cellStack;
         DispatcherTimer dispatchTimer;
+        int actualNumOfMines;
 
-        public Graph(Canvas canvas)
+        public Graph(Canvas canvas, int numOfMines)
         {
             this.canvas = canvas;
             xNumberofCells = (int)canvas.Width/Cell.cellLength;
@@ -35,10 +37,7 @@ namespace Minesweeper
                     cellGrid[i, j] = new Cell(new Coordinate(i, j), this.canvas);
                 }
             }
-
-            setMines();
-            calculateNumOfMineNeighbours();
-
+            
             //Set up the cellList
             cellList = new Cell[xNumberofCells * yNumberofCells];
             //Populate the cellList
@@ -53,6 +52,16 @@ namespace Minesweeper
             //Set the adjanceny values here
             adjMatrix = new int[xNumberofCells * yNumberofCells, xNumberofCells * yNumberofCells];
             setUpAdjMatrix();
+
+            //CalculateActualNumberOfMines;
+            this.actualNumOfMines = setMines(numOfMines);
+            calculateNumOfMineNeighbours();
+
+        }
+
+        public int getActualNumberOfMines()
+        {
+            return actualNumOfMines;
         }
 
         public void printAdjMatrix()
@@ -186,7 +195,9 @@ namespace Minesweeper
             {
                 traversalCell = cellStack.Pop();
                 traversalCell.visitIt();
+                MainWindow.visitedCells++;
                 pushAppropriateNeighboursToStack(traversalCell);
+                
             }
         }
 
@@ -221,15 +232,25 @@ namespace Minesweeper
             return cellGrid[coordinate.getXCoordinate(), coordinate.getYCoordinate()];
         }
 
-        public void setMines()
+        public int setMines(int numOfMines)
         {
             Random random = new Random();
-            for (int a = 0; a < 100; a++)
+            for (int a = 0; a < numOfMines; a++)
             {
                 int i = random.Next(0, xNumberofCells);
                 int j = random.Next(0, yNumberofCells);
                 cellGrid[i, j].placeTheMine();
             }
+
+            int actualNumOfMines = 0;
+            for (int i = 0; i < cellList.Length; i++)
+            {
+                if (cellList[i].containsAMine())
+                {
+                    actualNumOfMines++;
+                }
+            }
+            return actualNumOfMines;
         }
 
         public void calculateNumOfMineNeighbours()
@@ -287,8 +308,20 @@ namespace Minesweeper
                     cellGrid[i, j].setNumOfNeighbourMines(numOfMineNeighbours);
                 }
             }
+        }
 
-            
+        public void revealAllMines()
+        {
+            Debug.WriteLine("Rvealing mines");
+            for (int i = 0; i < cellList.Length; i++)
+            {
+                if (cellList[i].containsAMine() && !cellList[i].isFlagged)
+                {
+                    cellList[i].triggerTheMine();
+                    cellList[i].drawTheCell(false);
+
+                }
+            }
         }
     }
 }
