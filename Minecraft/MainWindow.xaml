@@ -13,5 +13,6 @@
         <Label x:Name="scoreLabel" Content="Score:" HorizontalAlignment="Left" Margin="86,10,0,0" VerticalAlignment="Top"/>
         <Label x:Name="totalMinesLabel" Content="Total Mines:" HorizontalAlignment="Left" Margin="245,10,0,0" VerticalAlignment="Top"/>
         <Label x:Name="flaggedMinesLabel" Content="Flagged Mines:" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="timeLabel" Content="Time:" HorizontalAlignment="Left" Margin="646,10,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
