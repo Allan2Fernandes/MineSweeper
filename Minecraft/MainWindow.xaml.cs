@@ -1,13 +1,14 @@
 ﻿
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
 using System.Windows.Media;
 
 using System.Windows.Shapes;
-
+using System.Windows.Threading;
 
 namespace Minesweeper
 {
@@ -23,6 +24,13 @@ namespace Minesweeper
         int numOfActualMines;
         int numOfFlaggedMines;
         public static int visitedCells = 0;
+        DispatcherTimer dispatcherTimer = new DispatcherTimer();
+        
+        
+        long currentTime;
+        double startTime;
+        double timeUsed;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -33,9 +41,26 @@ namespace Minesweeper
             numOfActualMines = graph.getActualNumberOfMines();
             totalMinesLabel.Content = "Total Mines: " + numOfActualMines;
             numOfFlaggedMines = 0;
-
-            
+            dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
+            dispatcherTimer.Tick += dispatcher_timer_tick;
+            dispatcherTimer.Start();
+            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
+
+        private void dispatcher_timer_tick(object sender, EventArgs e)
+        {
+            if (!gameOver)
+            {
+                currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                timeUsed = currentTime - startTime;
+                int timeInSeconds = (int)(timeUsed/1000);
+                int timeInMinutes = (timeInSeconds/60);
+                int secondsToDisplay = timeInSeconds % 60;
+                timeLabel.Content = String.Format("Time: {0}:{1}", timeInMinutes, secondsToDisplay);
+            }
+        }
+
+       
 
         private void leftMouseUpEventHandler(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -105,7 +130,7 @@ namespace Minesweeper
 
         private void windowResetEventHandler(object sender, System.Windows.Input.KeyEventArgs e)
         {
-          
+          //Reset Everything
             if (e.Key.ToString().Equals("Space"))
             {
                 Debug.WriteLine("Resetting");
@@ -119,7 +144,8 @@ namespace Minesweeper
                 totalMinesLabel.Content = "Total Mines: " + numOfActualMines;
                 visitedCells = 0;
                 scoreLabel.Content = "Score: " + visitedCells;
-
+                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                timeLabel.Content = String.Format("Time: {0}:{1}", 00, 00);
             }
            
             
